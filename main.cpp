@@ -1,3 +1,4 @@
+#include "heapsort.h"
 #include <algorithm>
 #include <chrono>
 #include <fstream>
@@ -8,13 +9,9 @@
 const int STEP = 500;
 const int LIMIT = 100'000;
 
-template <class Iterator> void heapSort(Iterator begin, Iterator end) {
-  std::sort(begin, end);
-}
-
 std::chrono::microseconds test(std::vector<int> &data) {
   auto start = std::chrono::high_resolution_clock::now();
-  heapSort(data.begin(), data.end());
+  heapsort(data.begin(), data.end());
   auto finish = std::chrono::high_resolution_clock::now();
   return std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
 }
