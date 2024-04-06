@@ -1,11 +1,9 @@
 #ifndef HEAPSORT_H
 #define HEAPSORT_H
 
-#include <algorithm>
-#include <iostream>
 #include <iterator>
 
-namespace heapsortImpl {
+namespace detail {
 template <class Iterator> Iterator parent(Iterator begin, Iterator current) {
   return begin + (current - begin - 1) / 2;
 }
@@ -35,8 +33,8 @@ template <class Iterator> void makeHeap(Iterator begin, Iterator end) {
       lift(begin, left);
       break;
     } else {
-      auto max = (*right > *left) ? right : left;
-      lift(begin, max);
+      lift(begin, left);
+      lift(begin, right);
     }
   }
 }
@@ -59,20 +57,16 @@ template <class Iterator> void heapify(Iterator begin, Iterator end) {
     if (*head < *max) {
       std::iter_swap(head, max);
       head = max;
-      continue;
+    } else {
+      break;
     }
-    break;
   }
 }
-} // namespace heapsortImpl
+} // namespace detail
 
 template <class Iterator> void heapsort(Iterator begin, Iterator end) {
-  using namespace heapsortImpl;
+  using namespace detail;
   makeHeap(begin, end);
-  for (auto i = begin; i != end; ++i) {
-    std::cout << *i << ' ';
-  }
-  std::cout << '\n';
   for (auto current = end - 1; current != begin; --current) {
     std::iter_swap(current, begin);
     heapify(begin, current);
