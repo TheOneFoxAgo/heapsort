@@ -2,11 +2,11 @@
 #include <algorithm>
 #include <chrono>
 #include <fstream>
-#include <random>
+#include <iostream>
 #include <vector>
 
-const int STEP = 500;
-const int LIMIT = 100'000;
+const int STEP = 10'000;
+const int LIMIT = 1'000'000;
 
 std::chrono::microseconds test(std::vector<int> &data) {
   auto start = std::chrono::high_resolution_clock::now();
@@ -25,20 +25,20 @@ int main(int argc, char **argv) {
   if (out.fail()) {
     return -1;
   }
-  auto rng = std::default_random_engine();
   for (int i = STEP; i <= LIMIT; i += STEP) {
-    for (int j = i - STEP; j < i; j++) {
-      data.push_back(j);
+    data.clear();
+    for (int j = 0; j < i; j++) {
+      data.push_back(std::rand());
     }
     switch (caseType) {
     case 'a':
-      std::shuffle(data.begin(), data.end(), rng);
+      // do nothing, the data is already shuffled
       break;
     case 'b':
-      std::reverse(data.begin(), data.end());
+      std::sort(data.rbegin(), data.rend());
       break;
     case 'w':
-      // worst case is sorted data, so we are doing nothing.
+      std::sort(data.begin(), data.end());
       break;
     default:
       return -1;
