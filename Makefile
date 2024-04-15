@@ -14,7 +14,7 @@ compplot:
 	gnuplot -p -c plot.pt "Количество сравнений" 3 $(FILENAMES)
 
 swapplot:
-	gnuplot -p -c plot.pt "Количество перестановок" 4 $(FILENAMES)
+	gnuplot -p -c plot.pt "Количество обменов" 4 $(FILENAMES)
 
 clean:
 	rm a.out
