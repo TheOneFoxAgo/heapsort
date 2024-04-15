@@ -1,8 +1,10 @@
 #!/bin/bash
 
-for i in average best worst 
+names=($1)
+cases=(b a w)
+for i in {0..2}
 do
-  ./a.out $i $i.txt &
+  ./a.out ${cases[$i]} results/${names[$i]}.txt &
 done
 wait
 

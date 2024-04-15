@@ -1,3 +1,4 @@
+#include "counter.h"
 #include "heapsort.h"
 #include <algorithm>
 #include <chrono>
@@ -8,7 +9,7 @@
 const int STEP = 10'000;
 const int LIMIT = 1'000'000;
 
-std::chrono::microseconds test(std::vector<int> &data) {
+template <class T> std::chrono::microseconds test(std::vector<T> &data) {
   auto start = std::chrono::high_resolution_clock::now();
   heapsort(data.begin(), data.end());
   auto finish = std::chrono::high_resolution_clock::now();
@@ -20,17 +21,18 @@ int main(int argc, char **argv) {
     return -1;
   }
   char caseType = *argv[1];
-  std::vector<int> data;
+  std::vector<Counter> data;
   std::ofstream out(argv[2]);
   if (out.fail()) {
     return -1;
   }
+  // out << "#Size\tTime\tComparisons\tSwaps\n";
   for (int i = STEP; i <= LIMIT; i += STEP) {
     data.clear();
     for (int j = 0; j < i; j++) {
-      data.push_back(std::rand());
+      data.push_back(Counter{std::rand()});
     }
-    switch (caseType) {
+    switch (std::tolower(caseType)) {
     case 'a':
       // do nothing, the data is already shuffled
       break;
@@ -43,6 +45,9 @@ int main(int argc, char **argv) {
     default:
       return -1;
     }
-    out << i << ' ' << test(data).count() << '\n';
+    Counter::comparisons = 0;
+    Counter::swaps = 0;
+    out << i << ' ' << test(data).count() << ' ' << Counter::comparisons << ' '
+        << Counter::swaps << '\n';
   }
 }
