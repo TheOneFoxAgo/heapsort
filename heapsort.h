@@ -4,6 +4,9 @@
 #include <functional>
 #include <iterator>
 namespace detail {
+template <class Iterator>
+using defaultComparator =
+    std::less<typename std::iterator_traits<Iterator>::value_type>;
 template <class Iterator> Iterator parent(Iterator begin, Iterator current) {
   return begin + (current - begin - 1) / 2;
 }
@@ -17,9 +20,8 @@ Iterator rightChild(Iterator begin, Iterator end, Iterator current) {
   auto diff = (current - begin) * 2 + 2;
   return diff < end - begin ? begin + diff : end;
 }
-template <class Iterator,
-          class Comparator = std::less<typename Iterator::value_type>>
-void lift(Iterator begin, Iterator current, Comparator comp = {}) {
+template <class Iterator, class Comparator = defaultComparator<Iterator>>
+void lift(Iterator begin, Iterator current, Comparator &&comp = {}) {
   auto currentParent = parent(begin, current);
   while (comp(*currentParent, *current)) {
     std::iter_swap(currentParent, current);
@@ -27,9 +29,8 @@ void lift(Iterator begin, Iterator current, Comparator comp = {}) {
     currentParent = parent(begin, currentParent);
   }
 }
-template <class Iterator,
-          class Comparator = std::less<typename Iterator::value_type>>
-void makeHeap(Iterator begin, Iterator end, Comparator comp = {}) {
+template <class Iterator, class Comparator = defaultComparator<Iterator>>
+void makeHeap(Iterator begin, Iterator end, Comparator &&comp = {}) {
   for (auto current = begin; current != end; ++current) {
     auto left = leftChild(begin, end, current);
     if (left == end) {
@@ -48,9 +49,8 @@ void makeHeap(Iterator begin, Iterator end, Comparator comp = {}) {
     }
   }
 }
-template <class Iterator,
-          class Comparator = std::less<typename Iterator::value_type>>
-void heapify(Iterator begin, Iterator end, Comparator comp = {}) {
+template <class Iterator, class Comparator = defaultComparator<Iterator>>
+void heapify(Iterator begin, Iterator end, Comparator &&comp = {}) {
   auto head = begin;
   while (true) {
     auto left = leftChild(begin, end, head);
@@ -77,8 +77,8 @@ void heapify(Iterator begin, Iterator end, Comparator comp = {}) {
 } // namespace detail
 
 template <class Iterator,
-          class Comparator = std::less<typename Iterator::value_type>>
-void heapsort(Iterator begin, Iterator end, Comparator comp = {}) {
+          class Comparator = detail::defaultComparator<Iterator>>
+void heapsort(Iterator begin, Iterator end, Comparator &&comp = {}) {
   using namespace detail;
   makeHeap(begin, end, comp);
   for (auto current = end - 1; current != begin; --current) {

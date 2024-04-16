@@ -1,5 +1,5 @@
 FILENAMES="Лучший Средний Худший"
-.PHONY: clean plot test
+.PHONY: clean test timeplot compplot swapplot 
 
 default:
 	g++ -O3 main.cpp counter.cpp
